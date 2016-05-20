@@ -1,0 +1,101 @@
+@import url("http://fonts.googleapis.com/css?family=Lato:100,300,400,700");
+@import url("http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css");
+html,
+body {
+  height: 100%;
+  background: #e5e5e5;
+  font-family: 'Lato', sans-serif;
+  margin: 0px auto;
+}
+.wrap {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -60px;
+}
+.push,
+.footer {
+  height: 60px;
+}
+.footer {
+  background-color: #f5f5f5;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 33%;
+}
+#messages {
+  list-style: none;
+  background: none;
+  margin: 0;
+  padding: 0 0 50px 0;
+  margin-top: 60px;
+  margin-bottom: 10px;
+}
+#messages li {
+  padding: 0.5rem;
+  overflow: hidden;
+  display: flex;
+}
+#messages {
+  position: relative;
+  display: block;
+  text-align: center;
+  color: #c0c0c0;
+  height: 20px;
+  box-shadow: inset 20px 0px 0px #e5e5e5, inset -20px 0px 0px #e5e5e5, inset 0px -2px 0px #d7d7d7;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  cursor: default;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.other .msg {
+  order: 1;
+  border-top-left-radius: 0px;
+  box-shadow: -1px 2px 0px #d4d4d4;
+}
+.other:before {
+  content: "";
+  position: relative;
+  top: 0px;
+  right: 0px;
+  left: 40px;
+  width: 0px;
+  height: 0px;
+  border: 5px solid #fff;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+}
+.msg {
+  background: #fff;
+  min-width: 85px;
+  padding: 10px;
+  border-radius: 2px;
+  box-shadow: 0px 2px 0px rgba(0,0,0,0.07);
+}
+.msg p {
+  font-size: 1.8rem;
+  margin: 0 0 0 0;
+  color: #777;
+}
+.msg time {
+  font-size: 1rem;
+  color: #ccc;
+  margin-top: 3px;
+  float: right;
+  cursor: default;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.msg time:before {
+  content: "\f017";
+  color: #ddd;
+  font-family: FontAwesome;
+  display: inline-block;
+  margin-right: 4px;
+}

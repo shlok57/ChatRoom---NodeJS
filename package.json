@@ -1,0 +1,18 @@
+{
+  "name": "ChatApp",
+  "version": "0.0.1",
+  "description": "ChatApp",
+  "main": "app.js",
+  "author": {
+    "name": "Shlok Gandhi",
+    "email": "shlok.gandhi@gmail.com"
+  },
+  "dependencies": {
+    "express": "^3.4.4",
+    "jade": "*",
+    "mongodb": "^1.4.19",
+    "socket.io": "^1.0.6",
+    "stylus": "^0.49.1",
+    "timeago": "~1.5.2"
+  }
+}
