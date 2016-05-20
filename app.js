@@ -4,8 +4,6 @@ var user = require('./routes/user')
 var http = require('http');
 var path = require('path');
 
-var CUSTOMCONNSTR_MONGOLAB_URI = 'mongodb://localhost/chatroom';
-
 var app = express();
 var mongo = require('mongodb').MongoClient;
 
@@ -39,8 +37,9 @@ serve.listen(app.get('port'), function(){
 
 io.on('connection', function (socket) {
 	console.log('a user connected');
-
-	mongo.connect(CUSTOMCONNSTR_MONGOLAB_URI, function (err, db) {
+	console.log(process.env.CUSTOMCONNSTR_MONGOLAB_URI);
+	
+	mongo.connect(process.env.CUSTOMCONNSTR_MONGOLAB_URI, function (err, db) {
 		if(err){
 			console.warn(err.message);
 		} else {
@@ -55,7 +54,7 @@ io.on('connection', function (socket) {
 	});
 
 	socket.on('chat', function (msg, dt) {
-		mongo.connect(CUSTOMCONNSTR_MONGOLAB_URI, function (err, db) {
+		mongo.connect(process.env.CUSTOMCONNSTR_MONGOLAB_URI, function (err, db) {
 			if(err){
 				console.warn(err.message);
 			} else {
