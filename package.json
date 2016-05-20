@@ -3,10 +3,7 @@
   "version": "0.0.1",
   "description": "ChatApp",
   "main": "app.js",
-  "author": {
-    "name": "Shlok Gandhi",
-    "email": "shlok.gandhi@gmail.com"
-  },
+  "author": "Shlok Gandhi <shlok.gandhi@gmail.com>",
   "dependencies": {
     "express": "^3.4.4",
     "jade": "*",
@@ -14,5 +11,20 @@
     "socket.io": "^1.0.6",
     "stylus": "^0.49.1",
     "timeago": "~1.5.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shlok57/ChatRoom---NodeJS.git"
+  },
+  "keywords": [
+    "chat"
+  ],
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/shlok57/ChatRoom---NodeJS/issues"
   }
 }
