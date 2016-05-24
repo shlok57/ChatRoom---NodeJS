@@ -45,7 +45,7 @@ io.on('connection', function (socket) {
 			console.warn(err.message);
 		} else {
 			var collection = db.collection('chat_messages')
-			var stream = collection.find().sort().stream();
+			var stream = collection.find().sort({'date':1}).stream();
 			stream.on('data', function (chat) { console.log('emitting chat'); socket.emit('chat', chat.content, chat.date, chat.user_name); });
 		}
 	});
