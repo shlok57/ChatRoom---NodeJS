@@ -18,10 +18,12 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
+var MongoURI = process.env.CUSTOMCONNSTR_MONGOLAB_URI;
 
 // development only
 if ('development' == app.get('env')) {
 	app.use(express.errorHandler());
+	console.log('dev env');
 }
 
 app.get('/', routes.index);
@@ -37,15 +39,14 @@ serve.listen(app.get('port'), function(){
 
 io.on('connection', function (socket) {
 	console.log('a user connected');
-	console.log(process.env.CUSTOMCONNSTR_MONGOLAB_URI);
 	
-	mongo.connect(process.env.CUSTOMCONNSTR_MONGOLAB_URI, function (err, db) {
+	mongo.connect(MongoURI, function (err, db) {
 		if(err){
 			console.warn(err.message);
 		} else {
 			var collection = db.collection('chat_messages')
-			var stream = collection.find().sort().limit(10).stream();
-			stream.on('data', function (chat) { console.log('emitting chat'); socket.emit('chat', chat.content, chat.date); });
+			var stream = collection.find().sort().stream();
+			stream.on('data', function (chat) { console.log('emitting chat'); socket.emit('chat', chat.content, chat.date, chat.user_name); });
 		}
 	});
 
@@ -53,13 +54,13 @@ io.on('connection', function (socket) {
 		console.log('user disconnected');
 	});
 
-	socket.on('chat', function (msg, dt) {
-		mongo.connect(process.env.CUSTOMCONNSTR_MONGOLAB_URI, function (err, db) {
+	socket.on('chat', function (msg, dt, uname) {
+		mongo.connect(MongoURI, function (err, db) {
 			if(err){
 				console.warn(err.message);
 			} else {
 				var collection = db.collection('chat_messages');
-				collection.insert({ content: msg, date: dt }, function (err, o) {
+				collection.insert({ content: msg, date: dt , user_name: uname}, function (err, o) {
 					if (err) { console.warn(err.message); }
 					else { console.log("chat message inserted into db: " + msg + "\nAnd o: " + o); }
 				});
