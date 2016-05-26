@@ -67,6 +67,6 @@ io.on('connection', function (socket) {
 			}
 		});
 
-		socket.broadcast.emit('chat', msg);
+		socket.broadcast.emit('chat', msg, dt, uname);
 	});
 });
