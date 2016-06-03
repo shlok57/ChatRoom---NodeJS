@@ -3,6 +3,7 @@ var routes = require('./routes');
 var user = require('./routes/user')
 var http = require('http');
 var path = require('path');
+var usernames = [];
 
 var app = express();
 var mongo = require('mongodb').MongoClient;
@@ -52,6 +53,21 @@ io.on('connection', function (socket) {
 
 	socket.on('disconnect', function () {
 		console.log('user disconnected');
+		if(!socket.uname) return;
+		usernames.splice(usernames.indexOf(socket.uname), 1);
+	});
+
+	socket.on('new_user', function(data, callback){
+		if(usernames.indexOf(data) != -1){
+			callback(false);
+		}
+		else{
+			callback(true);
+			socket.uname = data;
+			usernames.push(data);
+			socket.emit('new_user_joined', data);
+		}
+		console.log(usernames);
 	});
 
 	socket.on('chat', function (msg, dt, uname) {

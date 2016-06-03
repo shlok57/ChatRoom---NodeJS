@@ -7,11 +7,12 @@ body {
   font-family: 'Lato', sans-serif;
   margin: 0px auto;
 }
-.wrap {
+.msgWrap {
   min-height: 100%;
   height: auto !important;
   height: 100%;
   margin: 0 auto -60px;
+  display: none;
 }
 .push,
 .footer {
