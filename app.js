@@ -25,6 +25,7 @@ var MongoURI = process.env.CUSTOMCONNSTR_MONGOLAB_URI;
 if ('development' == app.get('env')) {
 	app.use(express.errorHandler());
 	console.log('dev env');
+	console.log(MongoURI);
 }
 
 app.get('/', routes.index);
@@ -54,20 +55,20 @@ io.on('connection', function (socket) {
 	socket.on('disconnect', function () {
 		console.log('user disconnected');
 		if(!socket.uname) return;
-		usernames.splice(usernames.indexOf(socket.uname), 1);
+		// delete usernames[socket.uname];
 	});
 
 	socket.on('new_user', function(data, callback){
-		if(usernames.indexOf(data) != -1){
+		if(data in usernames){
 			callback(false);
 		}
 		else{
 			callback(true);
 			socket.uname = data;
-			usernames.push(data);
+			usernames[data] = socket;
 			socket.emit('new_user_joined', data);
 		}
-		console.log(usernames);
+		// console.log(usernames);
 	});
 
 	socket.on('chat', function (msg, dt, uname) {
@@ -84,5 +85,39 @@ io.on('connection', function (socket) {
 		});
 
 		socket.broadcast.emit('chat', msg, dt, uname);
+	});
+
+	socket.on('chat_to', function(data, fromname,callback){
+		if(data in usernames){
+			callback(true);
+			socket.to = data;			
+			socket.uname = fromname;
+		}
+		else{
+			console.log(usernames);
+			callback(false);			
+		}
+		// console.log(usernames);
+	});
+
+	socket.on('chat_pri', function (msg, dt, chatname) {
+		mongo.connect(MongoURI, function (err, db) {
+			if(err){
+				console.warn(err.message);
+			} else {
+				console.log('chatname ' + chatname);
+				console.log('socket.to ' + socket.to);
+				var sname = socket.uname > socket.to ? socket.uname : socket.to;
+				var bname = socket.uname < socket.to ? socket.uname : socket.to;
+				var collection_name = sname + '_and_' + bname;
+				var collection = db.collection(collection_name);
+				collection.insert({ content: msg, date: dt , from:socket.uname, to:socket.to }, function (err, o) {
+					if (err) { console.warn(err.message); }
+					else { console.log("chat message inserted into db: " + msg + "\nAnd o: " + o); }
+				});
+			}
+		});
+
+		usernames[socket.to].emit('chat', msg, dt, socket.uname);
 	});
 });
