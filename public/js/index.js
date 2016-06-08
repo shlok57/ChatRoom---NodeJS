@@ -4,6 +4,14 @@ $(document).ready(function(){
 	
 });
 
+$('#switch_chat-btn').click(function () {
+	alert('yraah');
+	// exports.index = function(req, res){
+ //  		res.render('user', { title: 'User Chatroom' });
+	// };
+	socket.emit('switch_chat');
+});
+
 $('#create_user').click(function () {
 	$uname = $('#uname_box').val();
 	socket.emit('new_user', $uname, function(data){
@@ -15,7 +23,8 @@ $('#create_user').click(function () {
 			$('#error').html('Username already taken...try again');
 		}
 	});
-	$('#uname_box').val() = '';
+	$('#uname_box').val('');
+	sessionStorage.setItem('uname', $uname);
 });
 
 $('#send-message-btn').click(function () {
@@ -23,19 +32,19 @@ $('#send-message-btn').click(function () {
 	var dt = new Date();
 	socket.emit('chat', msg, dt, $uname);
 	$('#messages').append(chat(msg,dt, $uname));
-	$('#message-box').val('');
-	var $target = $('html,body'); 
-	$target.animate({scrollTop: $(document).height()}, 1000);
+	$('#message-box').val('');	
 	return false;
 });
 
 socket.on('chat', function (msg, date, uname) {
 	var d = new Date(date);
 	$('#messages').append(chat(msg,d, uname));
+	var $target = $('html,body'); 
+	$target.animate({scrollTop: $(document).height()}, 1000);
 });
 
 function chat(msg,dt, un){
 	var c = $('<li class="other">');	
-	c.append('<div class="msg">' + '<div class="user">' + un + '</div>' +'<p>' + msg + '</p>' + '<time>' + jQuery.timeago(dt) + '</time></div></li>');
+	c.append('<div class="msg">' + '<div class="user">' + un + '</div>' +'<p>' + msg + '</p>' + '<time>' + jQuery.timeago(dt) + '</time></div></li>');	
 	return c;
 }

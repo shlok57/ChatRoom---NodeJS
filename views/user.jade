@@ -1,0 +1,29 @@
+extends layout
+
+block content
+	.container-fluid
+		h1 Welcome to the Node Chatroom
+
+	.unameWrap		
+		p Enter your Friend's Username
+		input(type="text" id="chatname_box" class="form-control input-lg" placeholder="Enter your Friend's Username...")
+		p(id="error")
+		button#create_user.btn.btn-primary.btn-lg.btn-block Chat
+
+	.msgWrap
+		.container-fluid        
+
+			ol(id='messages')
+
+			.push
+		.footer
+			.container-fluid
+				.row
+					.col-xs-8.col-sm-9
+						input(type="text" id="message-box" class="form-control input-lg" placeholder="Write a message here..." rows="3")
+					.col-xs-4.col-sm-3
+						button#send-message-btn.btn.btn-primary.btn-lg.btn-block Send
+
+
+block body_end
+	script(type='text/javascript' src='/js/user.js')
