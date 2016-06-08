@@ -1,19 +1,25 @@
 var socket = io();
 
+$(document).ready(function(){
+	$uname = sessionStorage.getItem('uname');
+	socket.emit('change_socket', $uname);
+	alert($uname);
+});
+
 $('#create_user').click(function () {
 	$chatname = $('#chatname_box').val();
-	$uname = $('#uname_box').val();
+
 	socket.emit('chat_to', $chatname, $uname, function(data){
 		if(data){
 			$('.unameWrap').hide();
 			$('.msgWrap').show();
+			alert(data);
 		}
 		else{
 			$('#error').html('No such Username found...try again');
 		}
 	});
-	$('#uname_box').val() = '';
-	$('#chatname_box').val() = '';
+	$('#chatname_box').val('');
 });
 
 $('#send-message-btn').click(function () {
@@ -30,6 +36,8 @@ $('#send-message-btn').click(function () {
 socket.on('chat_pri', function (msg, date, uname) {
 	var d = new Date(date);
 	$('#messages').append(chat(msg,d, uname));
+	var $target = $('html,body'); 
+	$target.animate({scrollTop: $(document).height()}, 1000);
 });
 
 function chat(msg,dt, un){
