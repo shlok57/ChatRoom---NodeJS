@@ -3,7 +3,8 @@ var socket = io();
 $(document).ready(function(){
 	$uname = sessionStorage.getItem('uname');
 	socket.emit('change_socket', $uname);
-	alert($uname);
+	socket.emit('get_chats', $uname);
+	// alert($uname);
 });
 
 $('#create_user').click(function () {
@@ -36,8 +37,6 @@ $('#send-message-btn').click(function () {
 socket.on('chat_pri', function (msg, date, uname) {
 	var d = new Date(date);
 	$('#messages').append(chat(msg,d, uname));
-	var $target = $('html,body'); 
-	$target.animate({scrollTop: $(document).height()}, 1000);
 });
 
 function chat(msg,dt, un){
@@ -45,3 +44,12 @@ function chat(msg,dt, un){
 	c.append('<div class="msg">' + '<div class="user">' + un + '</div>' +'<p>' + msg + '</p>' + '<time>' + jQuery.timeago(dt) + '</time></div></li>');
 	return c;
 }
+
+socket.on('get_chats', function(chat_mates) {
+	alert(chat_mates);
+	var $table = $('#chats');
+	for (i in chat_mates) {
+		var row = $('<tr><td>' + chat_mates[i] + '</td></tr>');
+		$table.append(row);
+	}
+});

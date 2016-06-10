@@ -107,7 +107,6 @@ io.on('connection', function (socket) {
 
 	socket.on('chat_to', function(data, fromname,callback){
 		if(data in usernames){
-			callback(123);
 			socket.to = data;			
 			socket.uname = fromname;
 			var collection_name = getCollectionName(socket.uname, socket.to);
@@ -118,8 +117,19 @@ io.on('connection', function (socket) {
 					var collection = db.collection(collection_name);
 					var stream = collection.find().sort({'date':1}).stream();
 					stream.on('data', function (chat) { socket.emit('chat_pri', chat.content, chat.date, chat.from); });					
+					
+					var collection = db.collection('users');
+
+					collection.update({$or: [{name: socket.uname}, {name: socket.to}]}, {$addToSet : {chats: collection_name}},{multi:true}, function (err){
+						if(err) {console.warn(err);}
+						else {
+							console.log('chatname included');
+						}
+					});
 				}
 			});
+			callback(123);
+
 		}
 		else{
 			console.log(usernames);
@@ -136,15 +146,7 @@ io.on('connection', function (socket) {
 				// console.log('chatname ' + chatname);
 				// console.log('socket.to ' + socket.to);
 				
-				var collection_name = getCollectionName(socket.uname, socket.to);
-				var collection = db.collection('users');
-
-				collection.update({$and: [{name: socket.uname}, {name: socket.to}]}, {$addToSet : {chats: collection_name}}, function (err){
-					if(err) {console.warn(err);}
-					else {
-						console.log('chatname included');
-					}
-				});
+				var collection_name = getCollectionName(socket.uname, socket.to);	
 				
 				var collection = db.collection(collection_name);
 				collection.insert({ content: msg, date: dt , from:socket.uname, to:socket.to }, function (err, o) {
@@ -161,10 +163,41 @@ io.on('connection', function (socket) {
 		socket.uname = uname;
 		usernames[uname] = socket;
 	});
-});
 
-function getCollectionName(a,b) {
-	var sname = a > b ? a : b;
-	var bname = a < b ? a : b;
-	return sname + '_and_' + bname;
-}
+	socket.on('get_chats', function(uname){
+		mongo.connect(MongoURI, function (err, db) {
+			if(err){
+				console.warn(err.message);
+			} else {
+				var collection = db.collection('users');
+				var stream = collection.find({name: uname}, {chats:1, _id:0}).stream();
+				var chat_mates = []
+				stream.on('data', function (chat) {
+					chat_mates = get_names(chat.chats,uname);
+					console.log(chat_mates);
+					socket.emit('get_chats',chat_mates);
+				});	
+				// chat_mates = get_names(chat_mates, uname);				
+			}
+		});
+	});
+
+	function getCollectionName(a,b) {
+		var sname = a > b ? a : b;
+		var bname = a < b ? a : b;
+		return sname + '_and_' + bname;
+	}
+
+	function get_names(a, name) {
+		var c = [];
+		for(i in a) {
+			var b = a[i];
+			b = b.replace('_','');
+			b = b.replace('_','');
+			b = b.replace('and','');
+			b = b.replace(name,'');
+			c.push(b);
+		}
+		return c;
+	}
+});
