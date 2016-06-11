@@ -49,7 +49,23 @@ socket.on('get_chats', function(chat_mates) {
 	alert(chat_mates);
 	var $table = $('#chats');
 	for (i in chat_mates) {
-		var row = $('<tr><td>' + chat_mates[i] + '</td></tr>');
+		var row = $('<tr data-matename="'+chat_mates[i]+'" onclick="openchat(this)"><td>' + chat_mates[i] + '</td></tr>');
 		$table.append(row);
 	}
 });
+
+function openchat(mate) {
+	alert('working');
+	var $chat_mate = mate.getAttribute("data-matename");
+	$chatname = $chat_mate;
+	socket.emit('chat_to', $chat_mate, $uname, function(data){
+		if(data){
+			$('.unameWrap').hide();
+			$('.msgWrap').show();
+			alert(data);
+		}
+		else{
+			$('#error').html('No such Username found...try again');
+		}
+	});
+}

@@ -105,8 +105,8 @@ io.on('connection', function (socket) {
 		socket.broadcast.emit('chat', msg, dt, uname);
 	});
 
-	socket.on('chat_to', function(data, fromname,callback){
-		if(data in usernames){
+	socket.on('chat_to', function(data, fromname,callback){		
+		if(usernames_list.indexOf(data) >= 0){
 			socket.to = data;			
 			socket.uname = fromname;
 			var collection_name = getCollectionName(socket.uname, socket.to);
@@ -129,10 +129,9 @@ io.on('connection', function (socket) {
 				}
 			});
 			callback(123);
-
 		}
 		else{
-			console.log(usernames);
+			console.log('no user found');
 			callback(false);			
 		}
 		// console.log(usernames);
