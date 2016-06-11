@@ -6,13 +6,15 @@ block content
 
 	.unameWrap		
 		p Enter your Friend's Username
-		input(type="text" id="chatname_box" class="form-control input-lg" placeholder="Enter your Friend's Username...")
+		input(type="text" id="chatname_box" class="input-lg" placeholder="Enter your Friend's Username...")
+		button#create_user.btn.btn-primary.btn-lg Chat
 		p(id="error")
-		button#create_user.btn.btn-primary.btn-lg.btn-block Chat
+		
 
 		table#chats.table.table-striped
 			thead
-				td Chats
+				td
+					h2 Chats
 
 	.msgWrap
 		.container-fluid        

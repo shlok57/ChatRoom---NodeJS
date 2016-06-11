@@ -3,13 +3,14 @@ extends layout
 block content
   .container-fluid
     h1 Welcome to the Node Chatroom
-    button#switch_chat-btn.btn.btn-primary.btn-block Private Chat
+    button#switch_chat-btn.btn.btn-primary Private Chat
 
   .unameWrap
-    p Enter Your Username
+    p
+      h3 Enter Your Username
     p(id="error")
-    input(type="text" id="uname_box" class="form-control input-lg" placeholder="Write a User name here...")
-    button#create_user.btn.btn-primary.btn-lg.btn-block Chat    
+    input(type="text" id="uname_box" class="input-lg" placeholder="Write a User name here...")
+    button#create_user.btn.btn-primary.btn-lg Chat    
 
   .msgWrap
     .container-fluid        
