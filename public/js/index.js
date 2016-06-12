@@ -9,7 +9,7 @@ $('#switch_chat-btn').click(function () {
 	// exports.index = function(req, res){
  //  		res.render('user', { title: 'User Chatroom' });
 	// };
-	socket.emit('switch_chat');
+	socket.emit('switch_chat');  //switch to user.js ---to-do
 });
 
 $('#create_user').click(function () {

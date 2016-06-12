@@ -1,13 +1,14 @@
 var express = require('express');
 var routes = require('./routes');
-var user = require('./routes/user')
+var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 var usernames = [];
 var usernames_list = [];
 
 var app = express();
-var mongo = require('mongodb').MongoClient;
+// var mongo = require('mongodb').MongoClient;
+var mongoose = require('mongoose');
 
 app.set('port', process.env.PORT || 8000);
 app.set('views', path.join(__dirname, 'views'));
@@ -21,6 +22,36 @@ app.use(app.router);
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 var MongoURI = process.env.CUSTOMCONNSTR_MONGOLAB_URI;
+
+mongoose.connect(MongoURI);
+var db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function(){
+	console.log("Connected to DB");
+});
+
+// Schema for the chat 
+var globalChatSchema = mongoose.Schema({
+	content: String;
+	user_name: String;
+	date: { type: Date, default: Date.now };
+});
+
+var userSchema = mongoose.Schema({
+	name: String;
+	chats: [String];
+});
+
+var privateChatSchema = mongoose.Schema({
+	chatname: String;
+	chat: [{content: String, date: { type: Date, default: Date.now }, from: String}]
+})
+
+
+var GlobalChat = mongoose.model('GlobalChat', globalChatSchema, "chat_messages");
+var User = mongoose.model('User', userSchema, "users");
+var PrivateChat = mongoose.model('PrivateChat', privateChatSchema, 'privateChats');
 
 // development only
 if ('development' == app.get('env')) {
