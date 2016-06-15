@@ -3,7 +3,7 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
-var usernames = [];
+var usernames = {};
 var usernames_list = [];
 
 var app = express();
@@ -107,7 +107,9 @@ io.on('connection', function (socket) {
 		else{
 			callback(true);
 			socket.uname = data;
+			console.log('before new_user: ' + usernames);
 			usernames[data] = socket;
+			console.log('after new_user: ' + usernames);
 			if (usernames_list.indexOf(data) == -1) {
 				usernames_list.push(data);
 				// mongo.connect(MongoURI, function (err, db) {
@@ -251,18 +253,23 @@ io.on('connection', function (socket) {
 			}
 		});
 
-		console.log('chat_pri: ' + (usernames));
-		if(usernames.indexOf(socket.to) >= 0){
+		console.log('chat_pri: ' + usernames);
+		console.log(usernames[socket.to]);
+		// console.log('Main prob here ' + usernames.indexOf(socket.to));
+		if(socket.to in usernames){
 			usernames[socket.to].emit('chat_pri', msg, dt, socket.uname);
 		}
 	});
-
+//----------------------------chk here-----------------------------------
+//********usernames array not working---------------------------------
 	socket.on('change_socket', function(uname){
 		console.log('change_socket called ' + uname);
 		console.log('socket ' + socket);
 		socket.uname = uname;
+		console.log('before socket change: ' + usernames);
 		usernames[uname] = socket;
-		console.log('chat_pri: ' + (usernames));
+		console.log(usernames[uname]);
+		console.log('after socket change: ' + usernames);
 	});
 
 	socket.on('get_chats', function(uname){
